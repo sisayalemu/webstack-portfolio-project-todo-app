@@ -18,8 +18,15 @@ jobs:
         script: |
           cd /var/www/todo-app
           
+          # Fix git permissions
+          git config --global --add safe.directory /var/www/todo-app
+          
           # Pull latest changes
           git pull origin main
+          
+          # Fix ownership and permissions
+          sudo chown -R $USER:$USER /var/www/todo-app
+          sudo chmod -R 755 /var/www/todo-app
           
           # Install and build backend
           cd backend
@@ -35,8 +42,8 @@ jobs:
           cd ../backend
           pm2 restart todo-app-backend || pm2 start dist/index.js --name todo-app-backend
           
-          # Serve frontend files (if needed)
-          # Note: Frontend build files are in frontend/dist
-          # You may need to configure nginx or a static file server
+          # Serve frontend files with PM2
+          cd ../frontend
+          pm2 restart todo-app-frontend || pm2 serve dist 3001 --name todo-app-frontend --spa
           
           echo "Deployment completed successfully!"
