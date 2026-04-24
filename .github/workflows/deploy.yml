@@ -1,0 +1,42 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          cd /var/www/todo-app
+          
+          # Pull latest changes
+          git pull origin main
+          
+          # Install and build backend
+          cd backend
+          npm install
+          npm run build
+          
+          # Install and build frontend
+          cd ../frontend
+          npm install
+          npm run build
+          
+          # Restart backend with PM2
+          cd ../backend
+          pm2 restart todo-app-backend || pm2 start dist/index.js --name todo-app-backend
+          
+          # Serve frontend files (if needed)
+          # Note: Frontend build files are in frontend/dist
+          # You may need to configure nginx or a static file server
+          
+          echo "Deployment completed successfully!"
