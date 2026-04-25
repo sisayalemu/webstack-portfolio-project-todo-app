@@ -42,8 +42,8 @@ jobs:
           cd ../backend
           pm2 restart todo-app-backend || pm2 start dist/index.js --name todo-app-backend
           
-          # Serve frontend files with PM2
+          # Serve frontend files with npm preview
           cd ../frontend
-          pm2 restart todo-app-frontend || pm2 serve dist 3001 --name todo-app-frontend --spa
+          pm2 restart todo-app-frontend || pm2 start "npm run preview" --name todo-app-frontend -- --port 4173 --host 0.0.0.0
           
           echo "Deployment completed successfully!"
