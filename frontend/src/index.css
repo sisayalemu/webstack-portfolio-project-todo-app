@@ -23,43 +23,4 @@ body {
   height: 100vh;
 }
 
-.form {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-
-.form h3 {
-	text-align: center;
-	margin-bottom: 20px;
-	font-size: 2rem;
-}
-
-.form .response {
-	color: red;
-}
-
-.form input, .form button {
-	border: 1px solid #12121277;
-	border-radius: 4px;
-	font-size: 1rem;
-	padding: .35rem .65rem;
-	margin: .6rem 0;
-}
-
-.form button {
-	background-color: dodgerblue;
-	border: none;
-	color: #f0f0f0;
-	cursor: pointer;
-	width: 100%;
-}
-
-.form button:hover {
-	background-color: blue;
-}
-
-.form a {
-  font-size: 1rem;
-}
+/* Form styles moved to individual component CSS files */
