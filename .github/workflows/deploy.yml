@@ -16,17 +16,17 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /var/www/todo-app
+          cd /home/dev/project/SisayA-todo-app
           
           # Fix git permissions
-          git config --global --add safe.directory /var/www/todo-app
+          git config --global --add safe.directory /home/dev/project/SisayA-todo-app
           
           # Pull latest changes
           git pull origin main
           
           # Fix ownership and permissions
-          sudo chown -R $USER:$USER /var/www/todo-app
-          sudo chmod -R 755 /var/www/todo-app
+          sudo chown -R $USER:$USER /home/dev/project/SisayA-todo-app
+          sudo chmod -R 755 /home/dev/project/SisayA-todo-app
           
           # Install and build backend
           cd backend
