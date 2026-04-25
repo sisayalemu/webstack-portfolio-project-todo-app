@@ -33,15 +33,16 @@ routes.push(new UserRoute(app))
 routes.push(new TodoRoute(app))
 
 
-Database.initialize(dbConfig)
+Database.initialize()
 	.then(async () => {
 		logger.info('database connected')
-		const server = createServer(app)
 		server.listen(3000, () => {
 			logger.info('server started')
 			routes.forEach(route => {
 				logger.info(`${route.getName()} configured`)
 			})
+		})
+
 		// create default api key
 		try {
 			const apiKey = new ApiKey()
@@ -54,6 +55,9 @@ Database.initialize(dbConfig)
 		}
 	})
 	.catch(err => {
-		logger.error('database connection failed')
+		logger.error('database conneciton failed')
 		logger.error(err.toString())
 	})
+
+
+const server = createServer(app)
