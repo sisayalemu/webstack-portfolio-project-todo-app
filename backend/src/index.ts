@@ -13,6 +13,17 @@ import TodoRoute from './todo/todo.route'
 import authorization from './middleware/authorization'
 import { ApiKey } from './api.key/api.key.entity'
 
+// 
+const dbConfig = {
+  host: process.env.DB_HOST || 'sisay-todo-mysql',
+  port: parseInt(process.env.DB_PORT || '3306'),
+  username: process.env.DB_USERNAME || 'todo_user',
+  password: process.env.DB_PASSWORD || 'todo_123',
+  database: process.env.DB_DATABASE || 'todo_app',
+  synchronize: true,
+  logging: true
+}
+
 const routes: Array<RouteConfig> = []
 
 const app = express()
@@ -33,16 +44,15 @@ routes.push(new UserRoute(app))
 routes.push(new TodoRoute(app))
 
 
-Database.initialize()
+Database.initialize(dbConfig)
 	.then(async () => {
 		logger.info('database connected')
+		const server = createServer(app)
 		server.listen(3000, () => {
 			logger.info('server started')
 			routes.forEach(route => {
 				logger.info(`${route.getName()} configured`)
 			})
-		})
-
 		// create default api key
 		try {
 			const apiKey = new ApiKey()
@@ -55,9 +65,6 @@ Database.initialize()
 		}
 	})
 	.catch(err => {
-		logger.error('database conneciton failed')
+		logger.error('database connection failed')
 		logger.error(err.toString())
 	})
-
-
-const server = createServer(app)
