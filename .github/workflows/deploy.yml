@@ -24,26 +24,13 @@ jobs:
           # Pull latest changes
           git pull origin main
           
-          # Fix ownership and permissions
-          sudo chown -R $USER:$USER /home/dev/project/SisayA-todo-app
-          sudo chmod -R 755 /home/dev/project/SisayA-todo-app
+          # Stop existing containers
+          docker-compose down || true
           
-          # Install and build backend
-          cd backend
-          npm install
-          npm run build
+          # Build and start new containers
+          docker-compose up --build -d
           
-          # Install and build frontend
-          cd ../frontend
-          npm install
-          npm run build
-          
-          # Restart backend with PM2
-          cd ../backend
-          pm2 restart todo-app-backend || pm2 start dist/index.js --name todo-app-backend
-          
-          # Serve frontend files with npm preview
-          cd ../frontend
-          pm2 restart todo-app-frontend || pm2 start "npm run preview" --name todo-app-frontend -- --port 4173 --host 0.0.0.0
+          # Clean up old images
+          docker image prune -f
           
           echo "Deployment completed successfully!"

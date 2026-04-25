@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sisay-todo-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=todo_user
+      - DB_PASSWORD=todo_password
+      - DB_DATABASE=todo_app
+      - FRONTEND_API_KEY=frontend-api-key-secret
+    depends_on:
+      - mysql
+    networks:
+      - todo-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sisay-todo-frontend
+    ports:
+      - "4173:80"
+    depends_on:
+      - backend
+    networks:
+      - todo-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: sisay-todo-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=todo_root
+      - MYSQL_DATABASE=todo_app
+      - MYSQL_USER=todo_user
+      - MYSQL_PASSWORD=todo_123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - todo-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  todo-network:
+    driver: bridge
